@@ -1,116 +1,45 @@
-#include <vector> 
-#include <random> 
-#include <iostream> 
-#include <fstream>
-#include <list> 
-#include "custom_random.h"
-#include <chrono> 
-#include <utility> 
+#include <iostream>
+#include <cstdlib>
+#include "test.hpp"
 
-using namespace std; 
+using namespace std;  
 
-/* Inserts element into container, in the ordered position using linear search 
- * @param cont: the container into which the element is inserted
- * @param element: the element to be inserted
- * @param begin: iterator for the first element in the sequence
- * @param end: iterator for one past the last element in the sequence
- * */ 
-template<typename Container, typename Iter, typename ElementType> 
-void linear_insert(Container& cont, Iter begin, Iter end, ElementType element){
-	while(begin != end && *begin<element){
-		++begin;
+int main(int argc, char** argv){
+	if(argc<7) {
+		cout << "Usage: speed_test <vector outfile> <list outfile> <seed> <min> <max> <step>\n";
+		return 1; 
 	}
-	cont.insert(begin, element);  
-} 
-
-
-/* Fills container with random, uniformly distributed numbers, in order.
- * @param cont: the container to be filled
- * @param num: the number of random numbers to fill container
- * @param seed: the seed with which to seed the random number generator
- * @param min: the minimum value of randomly generated numbers
- * @param max: the maximum value of randomly generate numbers*/
-template<typename Container> 
-void fill_random(Container& cont, int num, random_number_generator& rand_gen){
-	rand_gen.set_default_max(); 
-	for(int i=0; i<num; i++) linear_insert(cont, cont.begin(), cont.end(), rand_gen());
-}
-
-template<typename Container> 
-void empty_random(Container& cont, random_number_generator& rand_gen){
-	int size = cont.size(); 
-	int offset; 
-
-	for(int size = cont.size(); size > 0; size--){
-		rand_gen.set_max(size-1);
-		auto iter = cont.begin(); 
-		offset = rand_gen(); 
-		for(int i=0; i<offset; ++i) {
-			++iter;
-		}
-		cont.erase(iter);  
-	}
-
-}
-
-/* Prints the elements between the iterators. Debugging only. */
-template<typename Iter> 
-void print_contents(Iter begin, Iter end){
-	while(begin!=end) cout << *begin++ << " "; 
-	cout << endl;
-} 
-
-template<typename Iter> 
-void print_pairs(Iter begin, Iter end, ofstream& file){
-	// while(begin!=end) file << "Number: " << (*begin).first << "\tMilliseconds: "<< (*begin++).second << endl; 
-	while(begin!=end) file << (*begin).first << "\t" << (*begin++).second << endl; 
-	cout << endl;
-}
-
-template<typename Container> 
-int time_insertion(Container& c, random_number_generator& rand_gen, int num){
-	cout<< "Timing for " << num << " elements.\n"; 
-	using std::chrono::system_clock; 
-	using std::chrono::microseconds;
 	
-	auto start = system_clock::now(); 
-	fill_random(c, num, rand_gen);
-	empty_random(c, rand_gen);
-	auto stop = system_clock::now(); 
+	string name1 = argv[1]; 
+	string name2 = argv[2]; 
+	string seed_string = argv[3]; 
+	string min_string = argv[4];
+	string max_string = argv[5]; 
+	string step_string = argv[6];
 
-	return std::chrono::duration_cast<microseconds>(stop - start).count();
-}
-
-int main(){
-	int step = 10000; 
-	int time; 
-	vector<int> vec;
-	vector<pair<int, int>> vec_time_list; 
-
-
-	list<int> l;
-	vector<pair<int, int>> list_time_list; 
-
-	random_number_generator vec_gen(0, 0, 10000);
-	random_number_generator list_gen(0, 0, 10000); 
+	int min = stoi(min_string); 
+	int max = stoi(max_string); 
+	int step = stoi(step_string); 
+	int seed = stoi(seed_string);
 	
-	for(int num_elements= 1000; num_elements< 125000; num_elements+=step){
-		time = time_insertion(vec, vec_gen, num_elements);
-		pair<int, int> pair1{num_elements, time}; 
-		vec_time_list.push_back(pair1); 	
+	string title; 
+	string outfile = "seed_" + seed_string + "_min_" +min_string + "_max_" + max_string + "_step_" + step_string; 
+	if(argc == 8){
+		string flag = argv[7];
 		
-		time = time_insertion(l, list_gen, num_elements);
-		pair<int, int> pair2{num_elements, time};
-		list_time_list.push_back(pair2); 
+		if(flag=="--large-container"){
+			test::run_tests<test::large_container>(min, max, step, name1, name2, seed);
+			title = "\"Vector VS List - Large Container, Seed: " + seed_string + "\"";
+			outfile += "_lc.png"; 
+		}
+
+		else cout << "Unrecognized flag: " << flag << endl;
+	} else{ 
+		test::run_tests<int>(min, max, step, name1, name2, seed); 
+		title = "\"Vector VS List - Seed: " + seed_string + "\""; 
+		outfile += ".png"; 
 	}
-	
-	ofstream file;
-	file.open("vector.txt"); 
-	print_pairs(vec_time_list.begin(), vec_time_list.end(), file);
-
-	ofstream file2; 
-	file2.open("list.txt");
-	print_pairs(list_time_list.begin(), list_time_list.end(), file2); 
+	string command = "sh graph.sh " + name1 + " " + name2 + " " + outfile + " " + title;  
+	system(command.c_str());
+	return 0;
 }
-
-

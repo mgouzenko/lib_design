@@ -4,14 +4,14 @@ using namespace std;
 
 class random_number_generator{
 	private:
-		const static int DEFAULT_MAX = 2000;  
+		const static int DEFAULT_MAX = 10000;  
 		default_random_engine gen;
 		uniform_int_distribution<> dis; 
 		int rand_seed;
 		int min;
 		int max;
 	public:
-		random_number_generator(): rand_seed{0}, min{0}, max{2000}, dis(0,2000) {
+		random_number_generator(): rand_seed{0}, min{0}, max{DEFAULT_MAX}, dis(0, DEFAULT_MAX) {
 		}
 
 		random_number_generator(int s, const int minimum, const int maximum): 
