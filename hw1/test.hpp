@@ -12,11 +12,12 @@ using namespace std;
 namespace test{
 	class large_container{
 		int number;
-		char a[50];
+		const static int SIZE = 200; 
+		char a[SIZE];
 
 		public:
 		large_container(int num):number{num}{
-		
+			for(int i=0; i<SIZE; i++) a[i] = (char) rand()*255; 
 		};
 
 		friend bool operator<(const large_container& lhs, const large_container& rhs){
@@ -101,7 +102,7 @@ namespace test{
 
 	template<typename Type, typename Container> 
 	int time_insertion(Container& c, vector<Type> fillers, vector<int> removal_indicies){
-		cout<< "Timing for " << fillers.size() << " elements.\n"; 
+		cout<< "Timing for " << fillers.size() << " elements of container: " << typeid(Container).name() <<endl; 
 			
 		using std::chrono::system_clock; 
 		using std::chrono::microseconds;	

@@ -8,6 +8,7 @@ graph -T png\
 	-W .0035 -m 2 $2\
 		--top-label "$4"\
 		--title-font-size 0.05\
+		-f 0.035\
 		--y-label "Microseconds"\
 		--x-label "Number of Elements"\
 		-w .7\
