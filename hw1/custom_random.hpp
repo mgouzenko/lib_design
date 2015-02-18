@@ -1,6 +1,12 @@
 #ifndef __custom_random_h__
 #define __custom_random_h__
+
+#include <random> 
 using namespace std; 
+
+/* This is my custom random number generator. I use a default random engine and feed its output
+ * to a uniform distribution. The purpose of having a class like this is to preserve the random 
+ * number generator and not reseed it between trials. */
 
 class random_number_generator{
 	private:
@@ -36,11 +42,13 @@ class random_number_generator{
 			reset_distribution(); 	 
 		}
 
+		//Reset the uniform distribution after altering the min or max. 
 		void reset_distribution(){
 			uniform_int_distribution<> newdis(min, max); 
 			dis = newdis;	
 		}
 
+		//Operator() allows us to just do rand_gen() to acquire the next random number. 
 		int operator()(){return dis(gen);}
 
 };

@@ -1,3 +1,5 @@
+#This is a shell script that I invoke from within speed_test to plot the graphs. 
+
 if [ $# -lt 4 ]
 	then
 		echo "Usage: <Vector Infile> <List Infile> <Outfile Name> <Title>"
