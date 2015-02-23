@@ -19,9 +19,14 @@ void generalized_sort<list<string>>(list<string>& l){
 	l.sort(); 
 }
 
-template<typename Container> 
-void generalized_qsort(Container* cont, int num, int size){
-	qsort(cont, num, size);  
+template<typename Type>
+int comparator(void* obj1, void* obj2){
+	return (static_cast<Type> (obj1)) < (static_cast<Type> (obj2)); 
+}
+
+template<typename Type, typename Container> 
+void generalized_qsort(Container& cont, int num){
+	qsort( static_cast<void*> (&cont), num, sizeof(Type), &comparator<Type>);  
 }
 
 string rand_word(random_number_generator& rand_gen, int min = MIN_LENGTH, int max = MAX_LENGTH){
