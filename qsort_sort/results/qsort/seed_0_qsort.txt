@@ -1,0 +1,5 @@
+int[]	17087
+vector<string>	69282
+vector<char*>	47458
+vector<char*> - case insensitive	77719
+list<string>	100109

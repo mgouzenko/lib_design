@@ -1,6 +1,11 @@
+CXX = /usr/local/bin/g++ 
 CXXFLAGS = -std=c++11 -O2 
 
 main: main.cpp
+
+string_qsort: string_qsort.cpp
+
+string_sort: string_sort.cpp
 
 .PHONY: clean
 clean:
