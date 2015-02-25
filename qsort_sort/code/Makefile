@@ -5,6 +5,10 @@ main: main.cpp
 
 string_qsort: string_qsort.cpp
 
+int_qsort: int_qsort.cpp
+
+int_sort: int_sort.cpp
+
 string_sort: string_sort.cpp
 
 .PHONY: clean

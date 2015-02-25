@@ -40,7 +40,11 @@ void run_tests(int num, int s){
 	time = time_generalized_qsort(&string_vec[0], num, sizeof(string), &less_than_comparison_void<string>);
 	qsort_results.push_back(pair<string, int>("vector<string>", time));  
 	
-	time = time_generalized_sort(begin(new_string_vec), end(new_string_vec), &less_than_comparison<string>);
+	time = time_generalized_sort(begin(new_string_vec), end(new_string_vec), [](string s1, string s2) 
+																						{
+																							return s1 < s2; 
+																						}
+																						);
 	sort_results.push_back(pair<string, int>("vector<string>", time));
 
 	
